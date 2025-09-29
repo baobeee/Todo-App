@@ -1,9 +1,12 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import todo_icon from '../assets/todo_icon.png'
 import TodoItems from './TodoItems'
 
 const Todo = () => {
-    const [todoList, setTodoList] = useState([])
+  //lấy dữ liệu từ localStorage nếu chưa có thì set []
+    const [todoList, setTodoList] = useState(localStorage.getItem("todos")?
+  JSON.parse(localStorage.getItem('todos')) : []
+  )
   
   const inputRef = useRef()
   const add =()=>{
@@ -21,11 +24,30 @@ const Todo = () => {
     inputRef.current.focus()//focus after added
   }
 
+  //return về arr mới thõa đk
   const deleteTodo =(id)=>{
     setTodoList(prev=>{
       return prev.filter((todo)=> todo.id !== id)//giữ lại todo nào khác với id muốn xóa
     })
   }
+
+  //chọn vào todo để xóa và kèm theo dòng gạch ngang text
+  const toggle = (id)=>{
+    setTodoList((prev)=>{
+      return prev.map(todo=>{
+        if(todo.id === id) return {...todo, isComplete: !todo.isComplete}
+        return todo
+      }
+    )
+    })
+  }
+
+  //
+  useEffect(()=>{
+    localStorage.setItem("todos", JSON.stringify(todoList))
+    console.log(typeof(todoList));
+        
+  }, [todoList])
   return (
     <div className='bg-white place-self-center
      w-11/12 max-w-md flex flex-col p-7 min-h-[550px] rounded-xl'>
@@ -45,7 +67,7 @@ const Todo = () => {
         {/* ---------------Todo list--------------- */}
         <div>
           {todoList.map((item, index)=>{
-            return <TodoItems key={index} text={item.text} id={item.id} isComplete={item.isComplete} deleteTodo={deleteTodo}/>//props: text
+            return <TodoItems key={index} text={item.text} id={item.id} isComplete={item.isComplete} toggle={toggle} deleteTodo={deleteTodo}/>//props: text
           })}
         </div>
     </div>
