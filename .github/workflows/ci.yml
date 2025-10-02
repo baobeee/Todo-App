@@ -32,3 +32,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           force_orphan: true
+          allow_empty_commit: true
+          keep_files: true
+          enable_jekyll: false
