@@ -1,12 +1,12 @@
-name: CI/CD
+name: Build TodoApp
 
-# Kích hoạt workflow khi push lên main
+# Kích hoạt workflow khi push vào main
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,14 +28,9 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # 5️⃣ Deploy lên GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      # 5️⃣ (Optional) Upload artifact để download nếu cần
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # thư mục build output
-          publish_branch: gh-pages # branch deploy
-          force_orphan: true # tạo branch mới nếu chưa có
-          allow_empty_commit: true # commit nếu không có thay đổi
-          keep_files: true # không xóa file tạm trong runner
-          enable_jekyll: false # tắt Jekyll
+          name: todoapp-dist
+          path: ./dist
