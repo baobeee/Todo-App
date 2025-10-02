@@ -1,25 +1,28 @@
-name: CI
+name: CI/CD
 
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Cài Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+
       - name: Cài dependencies
         run: npm install
-      - name: Build project
-        run: npm run build
 
-      - name: Deploy to Github Pages
+      - name: Build project
+        run: npm run build # build ra thư mục dist
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./dist # chỉ định thư mục dist
