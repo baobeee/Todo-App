@@ -1,37 +1,41 @@
 name: CI/CD
 
+# Kích hoạt workflow khi push lên main
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
-      # Lấy code từ repo
-      - uses: actions/checkout@v3
 
-      # Cài Node.js
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Cài Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # Cài dependencies
+      # 3️⃣ Cài dependencies
       - name: Install dependencies
         run: npm install
 
-      # Build project ra dist/
+      # 4️⃣ Build project
       - name: Build project
         run: npm run build
 
-      # Deploy lên GitHub Pages
+      # 5️⃣ Deploy lên GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          force_orphan: true
-          allow_empty_commit: true
-          keep_files: true
-          enable_jekyll: false
+          publish_dir: ./dist # thư mục build output
+          publish_branch: gh-pages # branch deploy
+          force_orphan: true # tạo branch mới nếu chưa có
+          allow_empty_commit: true # commit nếu không có thay đổi
+          keep_files: true # không xóa file tạm trong runner
+          enable_jekyll: false # tắt Jekyll
