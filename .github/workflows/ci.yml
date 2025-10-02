@@ -8,19 +8,24 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
+      # Lấy code từ repo
       - uses: actions/checkout@v3
 
-      - name: Cài Node.js
+      # Cài Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Cài dependencies
+      # Cài dependencies
+      - name: Install dependencies
         run: npm install
 
+      # Build project ra dist/
       - name: Build project
-        run: npm run build # build ra ./dist
+        run: npm run build
 
+      # Deploy lên GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
